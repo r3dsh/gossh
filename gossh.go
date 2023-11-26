@@ -178,21 +178,6 @@ func (client *Client) SSHSession() (*ssh.Session, error) {
     return session, nil
 }
 
-// NewJumpClient creates a new SSH client with the given configuration
-func NewJumpClient(targetHost HostConfig, jumpHosts []HostConfig) (*Client, error) {
-    // Create client with the target host's configuration
-    config, err := createClientConfig(targetHost.User, targetHost.PrivateKey, targetHost.Password)
-    if err != nil {
-        return nil, err
-    }
-
-    return &Client{
-        Config:     config,
-        JumpHosts:  jumpHosts,
-        TargetHost: targetHost,
-    }, nil
-}
-
 // NewDirectClient creates an SSH client for a direct connection to the target host
 func NewDirectClient(targetHost HostConfig) (*Client, error) {
     config, err := createClientConfig(targetHost.User, targetHost.PrivateKey, targetHost.Password)
@@ -207,10 +192,25 @@ func NewDirectClient(targetHost HostConfig) (*Client, error) {
     }, nil
 }
 
+// NewJumpClient creates a new SSH client with the given configuration
+func NewJumpClient(targetHost HostConfig, jumpHosts ...HostConfig) (*Client, error) {
+    // Create client with the target host's configuration
+    config, err := createClientConfig(targetHost.User, targetHost.PrivateKey, targetHost.Password)
+    if err != nil {
+        return nil, err
+    }
+
+    return &Client{
+        Config:     config,
+        JumpHosts:  jumpHosts,
+        TargetHost: targetHost,
+    }, nil
+}
+
 // NewClient creates an SSH client based on the presence of jump hosts
-func NewClient(targetHost HostConfig, jumpHosts []HostConfig) (*Client, error) {
+func NewClient(targetHost HostConfig, jumpHosts ...HostConfig) (*Client, error) {
     if jumpHosts != nil {
-        return NewJumpClient(targetHost, jumpHosts)
+        return NewJumpClient(targetHost, jumpHosts...)
     }
     return NewDirectClient(targetHost)
 }
