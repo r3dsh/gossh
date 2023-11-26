@@ -96,4 +96,32 @@ If you don't like my syntactic sugar, you can get vanilla SSH client and/or sess
     client, err := client.SSHSession()
 ```
 
+Available public methods:
+
+- `func (client *Client) ExecuteCommand(command string) (string, error)`
+
+- `func (client *Client) StreamCommand(command string, combinedHandler CombinedOutputHandler, separateHandler SeparateOutputHandler) error`
+- `func (client *Client) SendStringToFile(data, remoteFilePath string) error`
+- `func (client *Client) StreamToRemoteFile(reader io.Reader, remoteFilePath string) error`
+
+- `func (client *Client) SCPUpload(reader io.Reader, size int64, remoteFilePath string) error`
+- `func (client *Client) SCPUploadFile(localFilePath, remoteFilePath string) error`
+
+- `func (client *Client) ProxyRemotePortToLocal(localPort string, remoteHost string, remotePort string) error`
+- `func (client *Client) ProxyRemoteUnixSocketToLocal(localPort string, remoteSocketPath string) error`
+ 
+- `func (client *Client) SSHClient() (*ssh.Client, error)`
+- `func (client *Client) SSHSession() (*ssh.Session, error)`
+
+Types:
+
+- `type CombinedOutputHandler func(line string)`
+- `type SeparateOutputHandler func(stdoutLine string, stderrLine string)`
+
+Constructors:
+
+- `func NewJumpClient(targetHost HostConfig, jumpHosts []HostConfig) (*Client, error)`
+- `func NewDirectClient(targetHost HostConfig) (*Client, error)`
+- `func NewClient(targetHost HostConfig, jumpHosts []HostConfig) (*Client, error)`
+
 ## DISCLAIMER: This my is first, one hour iteration on the library.
