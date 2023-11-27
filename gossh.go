@@ -156,7 +156,6 @@ func (client *Client) SSHClient() (*ssh.Client, error) {
     if err != nil {
         return nil, err
     }
-    defer sshClient.Close()
 
     return sshClient, nil
 }
@@ -167,13 +166,11 @@ func (client *Client) SSHSession() (*ssh.Session, error) {
     if err != nil {
         return nil, err
     }
-    defer sshClient.Close()
 
     session, err := sshClient.NewSession()
     if err != nil {
         return nil, fmt.Errorf("failed to create session on target host: %w", err)
     }
-    defer session.Close()
 
     return session, nil
 }
